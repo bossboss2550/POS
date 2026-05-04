@@ -165,11 +165,16 @@ export function POSPage() {
     const { productService } = await getServices();
     const product = await productService.getProductByBarcode(barcode);
     if (product) {
-      startTransition(() => {
-        addOptimisticItem({ productId: product.id, name: product.name, price: product.price });
-      });
-      cart.addItem(product);
-      notify.success(`Added: ${product.name}`);
+      if (isMobile) {
+        setCameraOpen(false);
+        setNumpadProduct(product);
+      } else {
+        startTransition(() => {
+          addOptimisticItem({ productId: product.id, name: product.name, price: product.price });
+        });
+        cart.addItem(product);
+        notify.success(`Added: ${product.name}`);
+      }
       return;
     }
 
@@ -180,7 +185,7 @@ export function POSPage() {
     }
 
     notify.warning(`Not found: ${barcode}`);
-  }, [addOptimisticItem, can, cart, notify, openMissingProductModal, startTransition]);
+  }, [addOptimisticItem, can, cart, isMobile, notify, openMissingProductModal, setCameraOpen, setNumpadProduct, startTransition]);
 
   useBarcodeScanner(handleBarcode);
 
