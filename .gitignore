@@ -1,0 +1,117 @@
+# ─── Dependencies ─────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ─── Build Outputs ────────────────────────────────────────────────────────────
+dist/
+build/
+*.tsbuildinfo
+.vite/
+.turbo/
+
+# ─── Environment Variables ────────────────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.docker
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ─── Database ─────────────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+postgres-data/
+
+# ─── Prisma ───────────────────────────────────────────────────────────────────
+# Keep schema.prisma and migrations in version control
+# Exclude generated client
+pos-api/node_modules/.prisma/
+pos-api/prisma/migrations/**/migration.sql.backup
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ─── Testing ──────────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+.vitest/
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+# Ignore docker volumes data but keep docker-compose.yml
+docker-compose.override.yml
+.docker/
+
+# ─── IDE & Editors ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# ─── OS Files ─────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── PWA / Service Workers ────────────────────────────────────────────────────
+sw.js
+workbox-*.js
+public/sw.js
+public/workbox-*.js
+
+# ─── Temporary Files ──────────────────────────────────────────────────────────
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+.next/
+out/
+
+# ─── Session & State ──────────────────────────────────────────────────────────
+# Keep session state folder but ignore sensitive data
+.copilot/session-state/**/sensitive-data.json
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+.eslintcache
+.stylelintcache
+*.orig
+package-lock.json.backup
+
+# ─── Local Product Media ─────────────────────────────────────────────────────
+pos-api/storage/products/*
+!pos-api/storage/products/.gitkeep

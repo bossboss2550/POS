@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  #root {
+    width: 100%;
+    min-height: 100vh;
+  }
+}
+
+/* ── Mobile safe-area ─────────────────────────────────────────────────── */
+:root {
+  --safe-top:    env(safe-area-inset-top,    0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Scrollbar utilities ──────────────────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Print styles ─────────────────────────────────────────────────────── */
+@media print {
+  /* Hide all chrome */
+  nav, aside, header, footer,
+  .no-print, button, [role="navigation"] { display: none !important; }
+
+  body { background: white !important; font-size: 11pt; }
+
+  /* Full-width charts */
+  .recharts-responsive-container { width: 100% !important; }
+
+  /* Page breaks */
+  .print-break-before { page-break-before: always; }
+  .print-break-after  { page-break-after:  always; }
+  .print-avoid-break  { page-break-inside: avoid; }
+
+  /* Preserve colors */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Receipt specifics */
+  .receipt-wrapper { max-width: 80mm; margin: 0 auto; font-family: monospace; }
+}

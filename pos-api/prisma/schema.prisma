@@ -1,0 +1,197 @@
+// Prisma schema — POS API
+// PostgreSQL (swap provider to "sqlite" for local dev without Docker)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  MANAGER
+  CASHIER
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  QR
+  TRANSFER
+}
+
+enum MovementType {
+  PURCHASE
+  SALE
+  ADJUSTMENT
+  TRANSFER
+  RETURN
+}
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String
+  passwordHash String
+  role         Role           @default(CASHIER)
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  orders       Order[]
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// ─── Category ─────────────────────────────────────────────────────────────────
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
+
+// ─── Product ──────────────────────────────────────────────────────────────────
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  barcode     String?   @unique
+  price       Decimal   @db.Decimal(10, 2)
+  cost        Decimal   @db.Decimal(10, 2) @default(0)
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  stock          Stock?
+  orderItems     OrderItem[]
+  stockMovements StockMovement[]
+}
+
+// ─── Stock ────────────────────────────────────────────────────────────────────
+
+model Stock {
+  id          String   @id @default(cuid())
+  productId   String   @unique
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity    Int      @default(0)
+  minQuantity Int      @default(5)
+  updatedAt   DateTime @updatedAt
+}
+
+model StockMovement {
+  id        String       @id @default(cuid())
+  productId String
+  product   Product      @relation(fields: [productId], references: [id])
+  type      MovementType
+  quantity  Int
+  note      String?
+  createdAt DateTime     @default(now())
+}
+
+// ─── Customer ─────────────────────────────────────────────────────────────────
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  points    Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+// ─── Order ────────────────────────────────────────────────────────────────────
+
+model Order {
+  id             String      @id @default(cuid())
+  orderNumber    String      @unique
+  customerId     String?
+  customer       Customer?   @relation(fields: [customerId], references: [id])
+  cashierId      String
+  cashier        User        @relation(fields: [cashierId], references: [id])
+  status         OrderStatus @default(PENDING)
+  subtotal       Decimal     @db.Decimal(10, 2)
+  taxAmount      Decimal     @db.Decimal(10, 2)
+  discountAmount Decimal     @db.Decimal(10, 2) @default(0)
+  total          Decimal     @db.Decimal(10, 2)
+  couponCode     String?
+  note           String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+  payment        Payment?
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  name      String
+  price     Decimal @db.Decimal(10, 2)
+  quantity  Int
+  discount  Decimal @db.Decimal(10, 2) @default(0)
+}
+
+model Payment {
+  id      String        @id @default(cuid())
+  orderId String        @unique
+  order   Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  method  PaymentMethod
+  amount  Decimal       @db.Decimal(10, 2)
+  change  Decimal       @db.Decimal(10, 2) @default(0)
+  paidAt  DateTime      @default(now())
+}
+
+// ─── Coupon ───────────────────────────────────────────────────────────────────
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  description String?
+  type        String    // "percent" | "fixed"
+  value       Decimal   @db.Decimal(10, 2)
+  minAmount   Decimal   @db.Decimal(10, 2) @default(0)
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
