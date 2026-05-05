@@ -54,7 +54,6 @@ function ProductGrid({ sortedFiltered, isMobile, cart, optimisticItems, favorite
           <div key={p.id} className="relative">
             <button
               onClick={() => handleTapProduct(p)}
-              disabled={p.stock === 0}
               className={`relative bg-white border-2 rounded-2xl p-3 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 w-full ${
                 inCart || isAdding ? "border-blue-400 bg-blue-50 shadow-md" : "border-gray-100 hover:border-blue-300 hover:shadow-sm"
               } ${isAdding ? "scale-95" : ""}`}
@@ -84,8 +83,8 @@ function ProductGrid({ sortedFiltered, isMobile, cart, optimisticItems, favorite
                 />
               <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight">{p.name}</p>
               <p className={`font-bold text-blue-600 mt-1 ${isMobile ? "text-base" : "text-sm"}`}>{formatCurrency(p.price)}</p>
-              <p className={`text-xs mt-0.5 ${p.stock === 0 ? "text-red-500" : p.stock <= p.minStock ? "text-orange-500 font-medium" : "text-gray-400"}`}>
-                {p.stock === 0 ? "Out of stock" : p.stock <= p.minStock ? `⚠ ${p.stock}` : `${p.stock}`}
+              <p className={`text-xs mt-0.5 ${p.stock <= 0 ? "text-red-500 font-medium" : p.stock <= p.minStock ? "text-orange-500 font-medium" : "text-gray-400"}`}>
+                {p.stock <= 0 ? `${p.stock}` : p.stock <= p.minStock ? `⚠ ${p.stock}` : `${p.stock}`}
               </p>
             </button>
           </div>
