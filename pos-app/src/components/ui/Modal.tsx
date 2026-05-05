@@ -53,8 +53,8 @@ export function Modal({ open, onClose, title, size = "md", children, footer }: M
       )}>
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0">
+            <h2 className="text-base font-semibold text-gray-900">{title}</h2>
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
@@ -66,11 +66,11 @@ export function Modal({ open, onClose, title, size = "md", children, footer }: M
         )}
 
         {/* Body */}
-        <div className="overflow-y-auto flex-1 px-6 py-4">{children}</div>
+        <div className="overflow-y-auto flex-1 px-4 py-3">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+          <div className="px-4 py-3 border-t border-gray-100 flex justify-end gap-3 shrink-0">
             {footer}
           </div>
         )}

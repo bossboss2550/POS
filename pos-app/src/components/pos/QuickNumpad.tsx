@@ -34,35 +34,35 @@ export function QuickNumpad({ product, onClose }: Props) {
   return (
     <Modal open={!!product} onClose={onClose} title="Add to Cart" size="sm">
       {/* Product preview */}
-      <div className="bg-blue-50 rounded-xl px-4 py-3 mb-4 text-center">
-        <p className="font-semibold text-gray-900 truncate">{product.name}</p>
-        <p className="text-blue-600 font-bold text-lg">{formatCurrency(product.price)}</p>
+      <div className="bg-blue-50 rounded-lg px-3 py-2 mb-3 text-center">
+        <p className="font-semibold text-gray-900 truncate text-sm">{product.name}</p>
+        <p className="text-blue-600 font-bold text-base">{formatCurrency(product.price)}</p>
       </div>
 
       {/* Display */}
-      <div className="bg-gray-50 rounded-xl py-4 text-center mb-4">
-        <p className="text-4xl font-bold text-gray-900 tabular-nums">{qty}</p>
-        <p className="text-xs text-gray-400 mt-1">
+      <div className="bg-gray-50 rounded-lg py-3 text-center mb-3">
+        <p className="text-3xl font-bold text-gray-900 tabular-nums">{qty}</p>
+        <p className="text-[10px] text-gray-400 mt-0.5">
           = {formatCurrency(product.price * (parseInt(qty) || 1))}
         </p>
       </div>
 
       {/* Numpad grid */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      <div className="grid grid-cols-3 gap-1.5 mb-2.5">
         {numKeys.map(k => (
           <button key={k} onClick={() => append(k)}
-            className="h-14 bg-white border border-gray-200 rounded-xl text-xl font-semibold text-gray-800 hover:bg-gray-50 active:scale-95 transition-transform shadow-sm">
+            className="h-11 bg-white border border-gray-200 rounded-lg text-lg font-semibold text-gray-800 hover:bg-gray-50 active:scale-95 transition-transform shadow-sm">
             {k}
           </button>
         ))}
         <button onClick={backspace}
-          className="h-14 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform shadow-sm">
-          <Delete className="w-5 h-5 text-gray-500" />
+          className="h-11 bg-white border border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-transform shadow-sm">
+          <Delete className="w-4 h-4 text-gray-500" />
         </button>
       </div>
 
       <button onClick={confirm}
-        className="w-full h-14 bg-blue-600 text-white rounded-2xl text-base font-bold hover:bg-blue-700 active:scale-98 transition-transform">
+        className="w-full h-11 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 active:scale-98 transition-transform">
         Add {qty} to Cart
       </button>
     </Modal>

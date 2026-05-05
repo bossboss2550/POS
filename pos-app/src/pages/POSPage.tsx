@@ -328,28 +328,28 @@ export function POSPage() {
 
   // ─── DESKTOP LAYOUT ───────────────────────────────────────────────────────
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] gap-3 -m-4 p-3 bg-gray-100">
+    <div className="flex h-[calc(100vh-3.5rem)] gap-2 -m-4 p-2 bg-gray-100">
       {/* Left: Product browser */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-3 border-b border-gray-100 flex gap-2 items-center">
+      <div className="flex-1 flex flex-col min-w-0 bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="p-2 border-b border-gray-100 flex gap-2 items-center">
           <div className="flex-1">
             <Input placeholder="Search products or scan barcode..."
               prefix={<Search className="w-4 h-4" />}
               suffix={<Barcode className="w-4 h-4" />}
               value={search} onChange={e => setSearch(e.target.value)} />
           </div>
-          <button onClick={openCustomerDisplay} title="Open Customer Screen" className="p-2 rounded-xl border border-gray-200 text-gray-500 hover:text-cyan-600 hover:border-cyan-300 transition-colors">
-              <Monitor className="w-5 h-5" />
+          <button onClick={openCustomerDisplay} title="Open Customer Screen" className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-cyan-600 hover:border-cyan-300 transition-colors">
+              <Monitor className="w-4 h-4" />
             </button>
             <button onClick={() => setCameraOpen(true)} title="Camera Scanner"
-            className="p-2 rounded-xl border border-gray-200 text-gray-500 hover:text-blue-600 hover:border-blue-300 transition-colors">
-            <Camera className="w-5 h-5" />
+            className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-blue-600 hover:border-blue-300 transition-colors">
+            <Camera className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex gap-1 px-3 py-2 overflow-x-auto border-b border-gray-50">
+        <div className="flex gap-1 px-2 py-1.5 overflow-x-auto border-b border-gray-50">
           <button onClick={() => setActiveCat("favorites")}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 ${
+            className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
               activeCat === "favorites" ? "bg-amber-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}>
             <Star className="w-3 h-3" />
@@ -357,7 +357,7 @@ export function POSPage() {
           </button>
           {[{ id: "all", name: t("pos.allCategories") }, ...categories].map(c => (
             <button key={c.id} onClick={() => setActiveCat(c.id)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
                 activeCat === c.id ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}>{c.name}</button>
           ))}
@@ -374,7 +374,7 @@ export function POSPage() {
             return (
               <div key={catId}
                 style={{ position:"absolute", inset:0, visibility: isActive ? "visible" : "hidden", pointerEvents: isActive ? "auto" : "none" }}
-                className="overflow-y-auto p-3">
+                className="overflow-y-auto p-2">
                 {catProducts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-32 text-gray-300">
                     <Search className="w-10 h-10 mb-2" />
@@ -390,112 +390,112 @@ export function POSPage() {
       </div>
 
       {/* Right: Desktop cart panel */}
-      <div className="w-80 shrink-0 flex flex-col bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-          <ShoppingCart className="w-5 h-5 text-blue-600" />
-          <h2 className="font-bold text-gray-800">{t("pos.cart")}</h2>
+      <div className="w-72 shrink-0 flex flex-col bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="px-3 py-2 border-b border-gray-100 flex items-center gap-2">
+          <ShoppingCart className="w-4 h-4 text-blue-600" />
+          <h2 className="font-bold text-gray-800 text-sm">{t("pos.cart")}</h2>
           {cart.itemCount() > 0 && (
-            <span className="ml-auto bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">{cart.itemCount()}</span>
+            <span className="ml-auto bg-blue-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{cart.itemCount()}</span>
           )}
         </div>
 
         {/* Hold Bills and View Held Bills buttons */}
-        <div className="px-3 py-2 border-b border-gray-50 flex gap-2">
+        <div className="px-2 py-1.5 border-b border-gray-50 flex gap-1.5">
           <button
             onClick={handleHoldCart}
             disabled={cart.items.length === 0}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-amber-500 text-white rounded-lg text-xs font-medium hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 bg-amber-500 text-white rounded-lg text-[10px] font-medium hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             title={t("pos.holdCart")}
           >
-            <Pause className="w-4 h-4" />
+            <Pause className="w-3.5 h-3.5" />
             {t("pos.holdBills")}
           </button>
           <button
             onClick={() => setHeldOpen(true)}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-200 relative transition-colors"
+            className="flex items-center justify-center gap-1 px-2 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-[10px] font-medium hover:bg-gray-200 relative transition-colors"
             title={t("pos.viewHeldBills")}
           >
-            <List className="w-4 h-4" />
+            <List className="w-3.5 h-3.5" />
             {cart.savedCarts.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{cart.savedCarts.length}</span>
+              <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{cart.savedCarts.length}</span>
             )}
           </button>
           {cart.items.length > 0 && (
-            <button onClick={cart.clearCart} className="px-2 text-xs text-red-400 hover:text-red-600">{t("common.clear")}</button>
+            <button onClick={cart.clearCart} className="px-1 text-[10px] text-red-400 hover:text-red-600">{t("common.clear")}</button>
           )}
         </div>
 
-        <div className="px-3 py-2 border-b border-gray-50">
+        <div className="px-2 py-1.5 border-b border-gray-50">
           <CustomerSearch selected={cart.customer} onSelect={cart.setCustomer} />
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+        <div className="flex-1 overflow-y-auto px-2 py-1.5 space-y-1.5">
           {cart.items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-32 text-gray-300">
-              <ShoppingCart className="w-10 h-10 mb-2" /><p className="text-sm">Scan or tap to add items</p>
+              <ShoppingCart className="w-8 h-8 mb-2" /><p className="text-xs">Scan or tap to add items</p>
             </div>
           ) : cart.items.map(item => (
-            <div key={item.product.id} className="bg-gray-50 rounded-xl p-3">
+            <div key={item.product.id} className="bg-gray-50 rounded-lg p-2">
               <div className="flex items-start justify-between gap-1">
-                <p className="text-xs font-semibold text-gray-800 flex-1 leading-tight">{item.product.name}</p>
+                <p className="text-[11px] font-semibold text-gray-800 flex-1 leading-tight">{item.product.name}</p>
                 <button onClick={() => cart.removeItem(item.product.id)} className="text-gray-300 hover:text-red-500 shrink-0 ml-1">
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3 h-3" />
                 </button>
               </div>
-              <div className="flex items-center justify-between mt-2 gap-2">
-                <div className="flex items-center gap-1 bg-white rounded-lg border border-gray-200 p-0.5">
-                  <button onClick={() => cart.updateQuantity(item.product.id, item.quantity - 1)} className="w-6 h-6 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center"><Minus className="w-3 h-3" /></button>
-                  <span className="w-7 text-center text-sm font-bold text-gray-700">{item.quantity}</span>
-                  <button onClick={() => cart.updateQuantity(item.product.id, item.quantity + 1)} className="w-6 h-6 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center"><Plus className="w-3 h-3" /></button>
+              <div className="flex items-center justify-between mt-1.5 gap-1.5">
+                <div className="flex items-center gap-0.5 bg-white rounded-md border border-gray-200 p-0.5">
+                  <button onClick={() => cart.updateQuantity(item.product.id, item.quantity - 1)} className="w-5 h-5 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center"><Minus className="w-2.5 h-2.5" /></button>
+                  <span className="w-6 text-center text-xs font-bold text-gray-700">{item.quantity}</span>
+                  <button onClick={() => cart.updateQuantity(item.product.id, item.quantity + 1)} className="w-5 h-5 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center"><Plus className="w-2.5 h-2.5" /></button>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Tag className="w-3 h-3 text-gray-400" />
+                <div className="flex items-center gap-0.5">
+                  <Tag className="w-2.5 h-2.5 text-gray-400" />
                   <input type="number" min={0} max={100} value={item.discount}
                     onChange={e => cart.updateItemDiscount(item.product.id, Number(e.target.value))}
-                    className="w-12 text-xs text-center border border-gray-200 rounded py-0.5 focus:outline-none focus:ring-1 focus:ring-blue-400" />
-                  <span className="text-xs text-gray-400">%</span>
+                    className="w-10 text-[10px] text-center border border-gray-200 rounded py-0.5 focus:outline-none focus:ring-1 focus:ring-blue-400" />
+                  <span className="text-[10px] text-gray-400">%</span>
                 </div>
-                <span className="text-sm font-bold text-blue-600 shrink-0">{formatCurrency(item.total)}</span>
+                <span className="text-xs font-bold text-blue-600 shrink-0">{formatCurrency(item.total)}</span>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="px-3 py-2 border-t border-gray-50 space-y-2">
-          <button onClick={() => setShowDiscount(v => !v)} className="flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 transition-colors">
-            <PercentCircle className="w-3.5 h-3.5" />
+        <div className="px-2 py-1.5 border-t border-gray-50 space-y-1.5">
+          <button onClick={() => setShowDiscount(v => !v)} className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-blue-600 transition-colors">
+            <PercentCircle className="w-3 h-3" />
             Order discount {cart.orderDiscount > 0 && <span className="text-blue-600 font-medium">({cart.orderDiscount}%)</span>}
           </button>
           {showDiscount && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <input type="range" min={0} max={50} step={5} value={cart.orderDiscount}
-                onChange={e => cart.setOrderDiscount(Number(e.target.value))} className="flex-1 accent-blue-600" />
-              <span className="text-sm font-bold text-blue-600 w-10 text-right">{cart.orderDiscount}%</span>
+                onChange={e => cart.setOrderDiscount(Number(e.target.value))} className="flex-1 h-1 accent-blue-600" />
+              <span className="text-xs font-bold text-blue-600 w-8 text-right">{cart.orderDiscount}%</span>
             </div>
           )}
           <CouponInput />
-          <div className="flex items-start gap-2">
-            <StickyNote className="w-3.5 h-3.5 text-gray-400 mt-1.5" />
+          <div className="flex items-start gap-1.5">
+            <StickyNote className="w-3 h-3 text-gray-400 mt-1.5" />
             <input type="text" placeholder="Add note..." value={cart.note}
               onChange={e => cart.setNote(e.target.value)}
-              className="flex-1 text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400" />
+              className="flex-1 text-[10px] border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400" />
           </div>
         </div>
 
-        <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 space-y-1">
-          <div className="flex justify-between text-xs text-gray-500"><span>Subtotal</span><span>{formatCurrency(cart.subtotal())}</span></div>
-          {cart.orderDiscount > 0 && <div className="flex justify-between text-xs text-green-600"><span>Order Discount ({cart.orderDiscount}%)</span><span>-{formatCurrency(cart.subtotal() * cart.orderDiscount / 100)}</span></div>}
-          {cart.couponDiscount > 0 && <div className="flex justify-between text-xs text-green-600"><span>Coupon ({cart.couponCode})</span><span>-{formatCurrency(cart.couponDiscount)}</span></div>}
-          {cart.taxEnabled && <div className="flex justify-between text-xs text-gray-500"><span>Tax ({cart.taxRate * 100}%)</span><span>{formatCurrency(cart.taxAmount())}</span></div>}
-          <div className="flex justify-between font-bold text-base text-gray-900 pt-1 border-t border-gray-200">
+        <div className="px-3 py-2 border-t border-gray-100 bg-gray-50 space-y-0.5">
+          <div className="flex justify-between text-[10px] text-gray-500"><span>Subtotal</span><span>{formatCurrency(cart.subtotal())}</span></div>
+          {cart.orderDiscount > 0 && <div className="flex justify-between text-[10px] text-green-600"><span>Order Discount ({cart.orderDiscount}%)</span><span>-{formatCurrency(cart.subtotal() * cart.orderDiscount / 100)}</span></div>}
+          {cart.couponDiscount > 0 && <div className="flex justify-between text-[10px] text-green-600"><span>Coupon ({cart.couponCode})</span><span>-{formatCurrency(cart.couponDiscount)}</span></div>}
+          {cart.taxEnabled && <div className="flex justify-between text-[10px] text-gray-500"><span>Tax ({cart.taxRate * 100}%)</span><span>{formatCurrency(cart.taxAmount())}</span></div>}
+          <div className="flex justify-between font-bold text-sm text-gray-900 pt-1 border-t border-gray-200">
             <span>Total</span><span className="text-blue-600">{formatCurrency(cart.total())}</span>
           </div>
         </div>
 
-        <div className="p-3">
+        <div className="p-2">
           <button onClick={() => setPaymentOpen(true)} disabled={cart.items.length === 0}
-            className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm">
-            <CreditCard className="w-5 h-5" />
+            className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-1.5 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs">
+            <CreditCard className="w-4 h-4" />
             Checkout · {formatCurrency(cart.total())}
           </button>
         </div>

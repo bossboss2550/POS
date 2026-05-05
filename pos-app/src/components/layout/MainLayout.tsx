@@ -41,7 +41,7 @@ export function MainLayout() {
       {/* Main content shifts right when desktop sidebar is open */}
       <div
         className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
-          !isMobile && sidebarOpen ? "lg:pl-64" : ""
+          !isMobile && sidebarOpen ? "lg:pl-56" : ""
         }`}
       >
         {/* Header — hidden on mobile POS to maximise screen space */}
@@ -55,7 +55,7 @@ export function MainLayout() {
               ? isPOSPage
                 ? "p-0"
                 : "p-3 pb-24"
-              : "p-4"
+              : "p-2"
           }`}
         >
           <Outlet />

@@ -46,7 +46,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-30 flex flex-col",
+          "fixed top-0 left-0 h-full w-56 bg-gray-900 text-white z-30 flex flex-col",
           "transition-transform duration-300",
           // On mobile: slide in/out based on sidebarOpen
           // On desktop: translate-x-0 when open, -translate-x-full when closed
