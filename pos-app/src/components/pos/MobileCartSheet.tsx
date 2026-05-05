@@ -134,9 +134,11 @@ export function MobileCartSheet({ onCheckout, onHoldCart, onViewHeld }: Props) {
                   <span>Discount</span><span>−{formatCurrency(cart.discountAmount())}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Tax</span><span>{formatCurrency(cart.taxAmount())}</span>
-              </div>
+              {cart.taxEnabled && (
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span>Tax ({cart.taxRate * 100}%)</span><span>{formatCurrency(cart.taxAmount())}</span>
+                </div>
+              )}
             </div>
 
             <button

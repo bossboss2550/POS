@@ -66,12 +66,7 @@ export const productService: IProductService = {
 
     const { data } = await axiosInstance.post<{ data: { imageUrl: string }; success: boolean }>(
       "/products/images",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
+      formData
     );
 
     return data.data.imageUrl;

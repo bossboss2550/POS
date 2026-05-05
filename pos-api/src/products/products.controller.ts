@@ -68,7 +68,7 @@ export class ProductsController {
         callback(null, file.mimetype.startsWith('image/'));
       },
       limits: {
-        fileSize: 5 * 1024 * 1024,
+        fileSize: 10 * 1024 * 1024,
       },
     }),
   )
@@ -76,7 +76,7 @@ export class ProductsController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         // Simplify to just check existence, then we can tighten.
-        .addMaxSizeValidator({ maxSize: 5 * 1024 * 1024 })
+        .addMaxSizeValidator({ maxSize: 10 * 1024 * 1024 })
         .build({ fileIsRequired: true, errorHttpStatusCode: 400 }),
     )
     file: any,

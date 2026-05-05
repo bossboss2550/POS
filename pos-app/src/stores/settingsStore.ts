@@ -11,6 +11,7 @@ const defaults: StoreSettings = {
   storeName: "My POS Store",
   address: "123 Main Street",
   phone: "02-123-4567",
+  taxEnabled: true,
   taxRate: 0.07,
   currency: "THB",
   currencySymbol: "฿",

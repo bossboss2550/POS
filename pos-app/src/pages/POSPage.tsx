@@ -1,6 +1,7 @@
 import { useState, useEffect, useDeferredValue, useOptimistic, useTransition, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useCartStore } from "@/stores/cartStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 import { useFavoritesStore } from "@/stores/favoritesStore";
 import { useNotification } from "@/hooks/useNotification";
 import { useBarcodeScanner } from "@/hooks/useBarcodeScanner";
@@ -113,12 +114,18 @@ export function POSPage() {
   const deferredSearch = useDeferredValue(search);
 
   const cart   = useCartStore();
+  const { settings } = useSettingsStore();
   const favorites = useFavoritesStore();
   const notify = useNotification();
   const { isMobile } = useMobileLayout();
   const { can } = usePermission();
 
   useOfflineSync({ syncProducts: true, syncQueue: true });
+
+  // Sync settings to cart
+  useEffect(() => {
+    cart.setTaxConfig(settings.taxEnabled, settings.taxRate);
+  }, [settings.taxEnabled, settings.taxRate, cart.setTaxConfig]);
 
   const [optimisticItems, addOptimisticItem] = useOptimistic<OptimisticCartItem[], OptimisticCartItem>(
     cart.items.map(i => ({ productId: i.product.id, name: i.product.name, price: i.product.price })),
@@ -480,7 +487,7 @@ export function POSPage() {
           <div className="flex justify-between text-xs text-gray-500"><span>Subtotal</span><span>{formatCurrency(cart.subtotal())}</span></div>
           {cart.orderDiscount > 0 && <div className="flex justify-between text-xs text-green-600"><span>Order Discount ({cart.orderDiscount}%)</span><span>-{formatCurrency(cart.subtotal() * cart.orderDiscount / 100)}</span></div>}
           {cart.couponDiscount > 0 && <div className="flex justify-between text-xs text-green-600"><span>Coupon ({cart.couponCode})</span><span>-{formatCurrency(cart.couponDiscount)}</span></div>}
-          <div className="flex justify-between text-xs text-gray-500"><span>Tax (7%)</span><span>{formatCurrency(cart.taxAmount())}</span></div>
+          {cart.taxEnabled && <div className="flex justify-between text-xs text-gray-500"><span>Tax ({cart.taxRate * 100}%)</span><span>{formatCurrency(cart.taxAmount())}</span></div>}
           <div className="flex justify-between font-bold text-base text-gray-900 pt-1 border-t border-gray-200">
             <span>Total</span><span className="text-blue-600">{formatCurrency(cart.total())}</span>
           </div>

@@ -172,6 +172,7 @@ export interface StoreSettings {
   storeName: string;
   address: string;
   phone: string;
+  taxEnabled: boolean;
   taxRate: number;         // e.g. 0.07 = 7%
   currency: string;        // e.g. "THB"
   currencySymbol: string;  // e.g. "฿"

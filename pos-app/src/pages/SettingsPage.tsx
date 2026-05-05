@@ -12,6 +12,7 @@ const schema = z.object({
   storeName:     z.string().min(1, "Store name is required"),
   address:       z.string().optional(),
   phone:         z.string().optional(),
+  taxEnabled:    z.boolean(),
   taxRate:       z.coerce.number().min(0).max(100),
   currency:      z.string().min(1),
   currencySymbol:z.string().min(1),
@@ -51,6 +52,7 @@ export function SettingsPage() {
       storeName:      settings.storeName,
       address:        settings.address,
       phone:          settings.phone,
+      taxEnabled:     settings.taxEnabled,
       taxRate:        settings.taxRate * 100,
       currency:       settings.currency,
       currencySymbol: settings.currencySymbol,
@@ -59,12 +61,14 @@ export function SettingsPage() {
   });
 
   const watchedCurrency = watch("currency");
+  const watchedTaxEnabled = watch("taxEnabled");
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const newSettings = {
       storeName:      data.storeName,
       address:        data.address ?? "",
       phone:          data.phone ?? "",
+      taxEnabled:     data.taxEnabled,
       taxRate:        data.taxRate / 100,
       currency:       data.currency,
       currencySymbol: data.currencySymbol,
@@ -101,9 +105,19 @@ export function SettingsPage() {
 
         <SectionCard title="Tax & Currency" icon={<DollarSign className="w-4 h-4" />}>
           <div className="space-y-4">
-            <Input label="Tax Rate (%)" type="number" min={0} max={100} step={0.1}
-              {...register("taxRate")} error={errors.taxRate?.message} placeholder="7"
-              suffix={<span className="text-gray-400 text-sm">%</span>} />
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+              <div>
+                <p className="text-sm font-medium text-gray-900">Enable Tax Calculation</p>
+                <p className="text-xs text-gray-500">Apply tax to all orders</p>
+              </div>
+              <input type="checkbox" {...register("taxEnabled")} className="w-5 h-5 accent-blue-600 rounded" />
+            </div>
+
+            {watchedTaxEnabled && (
+              <Input label="Tax Rate (%)" type="number" min={0} max={100} step={0.1}
+                {...register("taxRate")} error={errors.taxRate?.message} placeholder="7"
+                suffix={<span className="text-gray-400 text-sm">%</span>} />
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
               <select {...register("currency")}

@@ -7,6 +7,7 @@ function mapSettings(data: Record<string, string>): StoreSettings {
     storeName: data.storeName ?? "My POS Store",
     address: data.storeAddress ?? "",
     phone: data.storePhone ?? "",
+    taxEnabled: data.taxEnabled === undefined ? true : data.taxEnabled === "true",
     taxRate: parseFloat(data.taxRate ?? "0.07"),
     currency: data.currency ?? "THB",
     currencySymbol: data.currencySymbol ?? "฿",
@@ -25,6 +26,7 @@ export const settingsService = {
     if (settings.storeName !== undefined) payload.storeName = settings.storeName;
     if (settings.address !== undefined) payload.storeAddress = settings.address;
     if (settings.phone !== undefined) payload.storePhone = settings.phone;
+    if (settings.taxEnabled !== undefined) payload.taxEnabled = String(settings.taxEnabled);
     if (settings.taxRate !== undefined) payload.taxRate = String(settings.taxRate);
     if (settings.currency !== undefined) payload.currency = settings.currency;
     if (settings.currencySymbol !== undefined) payload.currencySymbol = settings.currencySymbol;

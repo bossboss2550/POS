@@ -75,7 +75,12 @@ export function Receipt({ order, onClose }: Props) {
           {order.discountAmount > 0 && (
             <div className="flex justify-between text-green-600"><span>Discount</span><span>-{formatCurrency(order.discountAmount)}</span></div>
           )}
-          <div className="flex justify-between"><span>Tax (7%)</span><span>{formatCurrency(order.taxAmount)}</span></div>
+          {order.taxAmount > 0 && (
+            <div className="flex justify-between">
+              <span>Tax ({Math.round((order.taxAmount / (order.subtotal - order.discountAmount)) * 100)}%)</span>
+              <span>{formatCurrency(order.taxAmount)}</span>
+            </div>
+          )}
           <div className="flex justify-between font-bold text-base mt-1 pt-1 border-t border-dashed border-gray-400">
             <span>TOTAL</span><span>{formatCurrency(order.total)}</span>
           </div>

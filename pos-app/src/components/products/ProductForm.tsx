@@ -18,7 +18,8 @@ import {
 import type { Category, Product } from "@/types";
 import type { ProductUpsertInput } from "@/services/types";
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+// Increased to 10MB for high-res mobile photos
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -171,7 +172,7 @@ export function ProductForm({ product, initialValues, categories, onSuccess, onC
     }
 
     if (file.size > MAX_IMAGE_SIZE) {
-      notify.error("Image must be 5 MB or smaller");
+      notify.error("Image must be 10 MB or smaller");
       event.target.value = "";
       return;
     }
@@ -184,6 +185,7 @@ export function ProductForm({ product, initialValues, categories, onSuccess, onC
     setSelectedImageFile(file);
     setImagePreviewUrl(nextPreviewUrl);
     setValue("imageUrl", "", { shouldDirty: true, shouldTouch: true });
+    // Reset input value to allow selecting same file
     event.target.value = "";
   };
 
@@ -275,15 +277,23 @@ export function ProductForm({ product, initialValues, categories, onSuccess, onC
               className="aspect-square w-full border border-gray-200 bg-white"
               iconClassName="h-10 w-10"
             />
-            <p className="text-xs text-gray-500">Stored locally on your on-prem server. JPG, PNG, WebP, AVIF up to 5 MB.</p>
+            <p className="text-xs text-gray-500">JPG, PNG, WebP, AVIF up to 10 MB.</p>
           </div>
 
           <div className="space-y-3">
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:border-blue-300 hover:text-blue-600">
-              <ImagePlus className="h-4 w-4" />
-              <span>{selectedImageFile ? "Replace photo" : imagePreviewUrl ? "Change photo" : "Upload photo"}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-            </label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:border-blue-300 hover:text-blue-600">
+                <ImagePlus className="h-4 w-4" />
+                <span>{selectedImageFile ? "Replace" : imagePreviewUrl ? "Change" : "Gallery"}</span>
+                <input type="file" accept="image/*" className="sr-only" onChange={handleImageChange} />
+              </label>
+
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:border-blue-300 hover:text-blue-600 sm:hidden">
+                <Camera className="h-4 w-4" />
+                <span>Camera</span>
+                <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={handleImageChange} />
+              </label>
+            </div>
 
             <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600">
               {selectedImageFile ? `Ready to upload: ${selectedImageFile.name}` : imagePreviewUrl ? "Using saved product photo" : "No product photo selected"}
@@ -388,4 +398,3 @@ export function ProductForm({ product, initialValues, categories, onSuccess, onC
     </>
   );
 }
-

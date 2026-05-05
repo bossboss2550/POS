@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { json, urlencoded } from 'express';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { AppModule } from './app.module';
@@ -9,6 +10,10 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.use(json({ limit: '20mb' }));
+  app.use(urlencoded({ limit: '20mb', extended: true }));
+
   const storageRoot = join(process.cwd(), 'storage');
 
   mkdirSync(storageRoot, { recursive: true });

@@ -20,6 +20,7 @@ interface CartStore {
   items: CartItem[];
   customer: Customer | null;
   orderDiscount: number;
+  taxEnabled: boolean;
   taxRate: number;
   note: string;
   couponCode: string;
@@ -36,6 +37,7 @@ interface CartStore {
   updateItemDiscount: (productId: string, discount: number) => void;
   setCustomer: (customer: Customer | null) => void;
   setOrderDiscount: (discount: number) => void;
+  setTaxConfig: (enabled: boolean, rate: number) => void;
   setNote: (note: string) => void;
   setCoupon: (code: string, discount: number) => void;
   removeCoupon: () => void;
@@ -50,6 +52,7 @@ type CartSyncSnapshot = Pick<
   | "items"
   | "customer"
   | "orderDiscount"
+  | "taxEnabled"
   | "taxRate"
   | "note"
   | "couponCode"
@@ -76,6 +79,7 @@ const getCartSnapshot = (state: CartStore): CartSyncSnapshot => ({
   items: state.items,
   customer: state.customer,
   orderDiscount: state.orderDiscount,
+  taxEnabled: state.taxEnabled,
   taxRate: state.taxRate,
   note: state.note,
   couponCode: state.couponCode,
@@ -89,6 +93,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       customer: null,
       orderDiscount: 0,
+      taxEnabled: true,
       taxRate: 0.07,
       note: "",
       couponCode: "",
@@ -97,7 +102,7 @@ export const useCartStore = create<CartStore>()(
 
       subtotal: () => roundCurrency(get().items.reduce((sum, item) => sum + item.total, 0)),
       discountAmount: () => roundCurrency(get().subtotal() * (get().orderDiscount / 100) + get().couponDiscount),
-      taxAmount: () => roundCurrency((get().subtotal() - get().discountAmount()) * get().taxRate),
+      taxAmount: () => get().taxEnabled ? roundCurrency((get().subtotal() - get().discountAmount()) * get().taxRate) : 0,
       total: () => roundCurrency(Math.max(0, get().subtotal() - get().discountAmount() + get().taxAmount())),
       itemCount: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
 
@@ -153,6 +158,7 @@ export const useCartStore = create<CartStore>()(
 
       setCustomer: (customer) => set({ customer }),
       setOrderDiscount: (orderDiscount) => set({ orderDiscount }),
+      setTaxConfig: (taxEnabled, taxRate) => set({ taxEnabled, taxRate }),
       setNote: (note) => set({ note }),
       setCoupon: (couponCode, couponDiscount) => set({ couponCode, couponDiscount }),
       removeCoupon: () => set({ couponCode: "", couponDiscount: 0 }),
