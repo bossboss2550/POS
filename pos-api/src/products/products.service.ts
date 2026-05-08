@@ -20,14 +20,14 @@ function mapProduct(product: any) {
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: PaginationDto & { categoryId?: string; lowStock?: boolean }) {
-    const { page = 1, limit = 20, search, categoryId, lowStock } = query;
+  async findAll(query: PaginationDto & { categoryId?: string; lowStock?: boolean; includeInactive?: boolean }) {
+    const { page = 1, limit = 20, search, categoryId, lowStock, includeInactive } = query;
     const pageNum = +page;
     const limitNum = +limit;
     const skip = (pageNum - 1) * limitNum;
 
     const where: any = {
-      isActive: true,
+      ...(!includeInactive && { isActive: true }),
       ...(search && { name: { contains: search, mode: 'insensitive' } }),
       ...(categoryId && { categoryId }),
     };

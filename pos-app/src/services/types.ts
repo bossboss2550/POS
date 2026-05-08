@@ -21,7 +21,7 @@ export interface IAuthService {
 }
 
 export interface IProductService {
-  getProducts(params?: PaginationParams & { categoryId?: string }): Promise<PaginatedResponse<Product>>;
+  getProducts(params?: PaginationParams & { categoryId?: string; includeInactive?: boolean }): Promise<PaginatedResponse<Product>>;
   getProductById(id: string): Promise<Product>;
   getProductByBarcode(barcode: string): Promise<Product | null>;
   createProduct(data: ProductUpsertInput): Promise<Product>;

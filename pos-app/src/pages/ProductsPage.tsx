@@ -20,6 +20,7 @@ export function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -32,7 +33,7 @@ export function ProductsPage() {
     setLoading(true);
     const { productService } = await getServices();
     const [productPage, categoryList] = await Promise.all([
-      productService.getProducts({ page: 1, pageSize: 500 }),
+      productService.getProducts({ page: 1, pageSize: 500, includeInactive: true }),
       productService.getCategories(),
     ]);
 
@@ -51,8 +52,11 @@ export function ProductsPage() {
       || product.name.toLowerCase().includes(query)
       || product.barcode.includes(query);
     const matchesCategory = catFilter === "all" || product.categoryId === catFilter;
+    const matchesStatus = statusFilter === "all" 
+      || (statusFilter === "active" && product.isActive)
+      || (statusFilter === "inactive" && !product.isActive);
 
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
   const handleDelete = async () => {
@@ -66,6 +70,19 @@ export function ProductsPage() {
       notify.success(`"${deleteTarget.name}" deleted`);
       setDeleteTarget(null);
       await load();
+    });
+  };
+
+  const handleToggleActive = async (product: Product) => {
+    startTransition(async () => {
+      try {
+        const { productService } = await getServices();
+        await productService.updateProduct(product.id, { isActive: !product.isActive });
+        notify.success(`"${product.name}" ${!product.isActive ? "activated" : "deactivated"}`);
+        await load();
+      } catch (err: any) {
+        notify.error("Failed to update status");
+      }
     });
   };
 
@@ -134,9 +151,18 @@ export function ProductsPage() {
               </option>
             ))}
           </select>
-        </div>
-      </div>
+          </div>
 
+          <select
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value as any)}
+          className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          <option value="all">All Status</option>
+          <option value="active">Active Only</option>
+          <option value="inactive">Inactive Only</option>
+          </select>
+          </div>
       {filtered.length === 0 ? (
         <EmptyState
           icon={<Package className="h-16 w-16" />}
@@ -180,6 +206,11 @@ export function ProductsPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
+                  <button type="button" onClick={() => handleToggleActive(product)} 
+                    className={`p-1 rounded-md transition-colors ${product.isActive ? "text-green-500 hover:bg-green-50" : "text-gray-400 hover:bg-gray-100"}`}
+                    title={product.isActive ? "Deactivate" : "Activate"}>
+                    <Package className="h-4 w-4" />
+                  </button>
                   <button type="button" onClick={() => openEdit(product)} className="text-gray-400 transition-colors hover:text-blue-600" aria-label={`Edit ${product.name}`}>
                     <Edit2 className="h-4 w-4" />
                   </button>
@@ -232,6 +263,11 @@ export function ProductsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2 opacity-100 transition-opacity group-hover:opacity-100">
+                        <button type="button" onClick={() => handleToggleActive(product)}
+                          className={`rounded-lg p-2 transition-colors ${product.isActive ? "text-green-600 hover:bg-green-50" : "text-gray-400 hover:bg-gray-100"}`}
+                          title={product.isActive ? "Deactivate" : "Activate"}>
+                          <Package className="h-4 w-4" />
+                        </button>
                         <button type="button" onClick={() => openEdit(product)} className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600" aria-label={`Edit ${product.name}`}>
                           <Edit2 className="h-4 w-4" />
                         </button>

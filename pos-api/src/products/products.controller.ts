@@ -34,8 +34,12 @@ export class ProductsController {
   constructor(private products: ProductsService) {}
 
   @Get()
-  findAll(@Query() query: PaginationDto & { categoryId?: string; lowStock?: string }) {
-    return this.products.findAll({ ...query, lowStock: query.lowStock === 'true' });
+  findAll(@Query() query: PaginationDto & { categoryId?: string; lowStock?: string; includeInactive?: string }) {
+    return this.products.findAll({ 
+      ...query, 
+      lowStock: query.lowStock === 'true',
+      includeInactive: query.includeInactive === 'true'
+    });
   }
 
   @Get('categories')
