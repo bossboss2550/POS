@@ -34,42 +34,45 @@ function mapOrder(o: any) {
 export class ReportsService {
   constructor(private prisma: PrismaService) {}
 
-  async getDashboard() {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+  async getDashboard(range: 'today' | 'week' | 'month' = 'week') {
+    const now = new Date();
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
 
-    // 7 days ago for trend
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
+    let daysToLookback = 0;
+    if (range === 'today') {
+      daysToLookback = 0;
+    } else if (range === 'week') {
+      daysToLookback = 6;
+      startDate.setDate(startDate.getDate() - 6);
+    } else if (range === 'month') {
+      daysToLookback = 29;
+      startDate.setDate(startDate.getDate() - 29);
+    }
 
-    const [todayOrders, totalProducts, lowStockCount, activeCustomers] =
+    const [rangeOrders, totalProducts, lowStockCount, activeCustomers] =
       await this.prisma.$transaction([
         this.prisma.order.findMany({
-          where: { createdAt: { gte: todayStart }, status: 'PAID' },
-          select: { total: true },
+          where: { createdAt: { gte: startDate }, status: 'PAID' },
+          select: { total: true, createdAt: true, items: { select: { quantity: true } } },
         }),
         this.prisma.product.count({ where: { isActive: true } }),
         this.prisma.stock.count({ where: { quantity: { lte: 5 } } }),
         this.prisma.customer.count({ where: { isActive: true } }),
       ]);
 
-    const todaySales = todayOrders.reduce((s, o) => s + Number(o.total), 0);
+    const totalSalesInRange = rangeOrders.reduce((s, o) => s + Number(o.total), 0);
 
-    // 7-day sales trend
-    const trendOrders = await this.prisma.order.findMany({
-      where: { status: 'PAID', createdAt: { gte: sevenDaysAgo } },
-      select: { total: true, createdAt: true, items: { select: { quantity: true } } },
-    });
-
+    // Dynamic sales trend based on lookback
     const trendMap: Record<string, { totalSales: number; totalOrders: number; totalItems: number }> = {};
-    for (let i = 6; i >= 0; i--) {
+    for (let i = daysToLookback; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const key = d.toISOString().split('T')[0];
       trendMap[key] = { totalSales: 0, totalOrders: 0, totalItems: 0 };
     }
-    for (const o of trendOrders) {
+
+    for (const o of rangeOrders) {
       const key = o.createdAt.toISOString().split('T')[0];
       if (trendMap[key]) {
         trendMap[key].totalSales += Number(o.total);
@@ -77,28 +80,28 @@ export class ReportsService {
         trendMap[key].totalItems += o.items.reduce((s, i) => s + i.quantity, 0);
       }
     }
+
     const salesTrend = Object.entries(trendMap).map(([date, v]) => ({
-      date,
+      date: range === 'today' ? date : date.split('-').slice(1).join('/'), // Simpler labels for charts
       totalSales: v.totalSales,
       totalOrders: v.totalOrders,
       totalItems: v.totalItems,
       avgOrderValue: v.totalOrders > 0 ? v.totalSales / v.totalOrders : 0,
     }));
 
-    // Top products (with revenue)
+    // Top products in range
     const topProductsRaw = await this.prisma.orderItem.groupBy({
       by: ['productId', 'name'],
       _sum: { quantity: true },
-      where: { order: { status: 'PAID' } },
+      where: { order: { status: 'PAID', createdAt: { gte: startDate } } },
       orderBy: { _sum: { quantity: 'desc' } },
       take: 5,
     });
 
-    // Get revenue by summing price*quantity per product
     const topProductRevenues = await Promise.all(
       topProductsRaw.map(async (p) => {
         const items = await this.prisma.orderItem.findMany({
-          where: { productId: p.productId, order: { status: 'PAID' } },
+          where: { productId: p.productId, order: { status: 'PAID', createdAt: { gte: startDate } } },
           select: { price: true, quantity: true, discount: true },
         });
         const revenue = items.reduce(
@@ -114,7 +117,7 @@ export class ReportsService {
       }),
     );
 
-    // Recent orders
+    // Recent orders (not scoped by date range, always show last 10)
     const recentOrdersRaw = await this.prisma.order.findMany({
       take: 10,
       orderBy: { createdAt: 'desc' },
@@ -127,8 +130,8 @@ export class ReportsService {
     });
 
     return {
-      todaySales,
-      todayOrders: todayOrders.length,
+      todaySales: totalSalesInRange,
+      todayOrders: rangeOrders.length,
       totalProducts,
       lowStockCount,
       activeCustomers,

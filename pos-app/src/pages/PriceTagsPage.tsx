@@ -30,10 +30,10 @@ export function PriceTagsPage() {
   const { contentRef, print } = usePrint<HTMLDivElement>({
     documentTitle: "price-tags",
     printStyle: `
-      @page { size: A4 portrait; margin: 8mm; }
-      .print-sheet { max-width: none !important; padding: 0 !important; }
-      .print-tag-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 3mm !important; }
-      .print-tag-card { break-inside: avoid; box-shadow: none !important; min-height: 34mm; }
+      @page { size: A4 portrait; margin: 5mm !important; }
+      .print-sheet { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+      .print-tag-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 2mm !important; }
+      .print-tag-card { break-inside: avoid !important; box-shadow: none !important; min-height: 26mm !important; height: 26mm !important; padding: 1mm !important; }
     `,
   });
 

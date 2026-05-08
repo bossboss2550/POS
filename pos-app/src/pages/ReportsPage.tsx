@@ -49,7 +49,7 @@ export function ReportsPage() {
     (async () => {
       const { reportService, orderService } = await getServices();
       const [sum, ord] = await Promise.all([
-        reportService.getDashboard(),
+        reportService.getDashboard(range),
         orderService.getOrders({ pageSize: 200, status: "paid" }),
       ]);
       setSummary(sum);
@@ -80,8 +80,8 @@ export function ReportsPage() {
   const pmData = Object.entries(pmMap).map(([name, value]) => ({ name, value }));
 
   const statCards = [
-    { label: "Total Revenue",  value: formatCurrency(summary.todaySales),          icon: TrendingUp,  color: "bg-blue-500"   },
-    { label: "Orders",         value: summary.todayOrders.toLocaleString(),         icon: ShoppingCart,color: "bg-green-500"  },
+    { label: range === "today" ? "Today's Revenue" : range === "week" ? "Weekly Revenue" : "Monthly Revenue",  value: formatCurrency(summary.todaySales),          icon: TrendingUp,  color: "bg-blue-500"   },
+    { label: range === "today" ? "Today's Orders" : range === "week" ? "Weekly Orders" : "Monthly Orders",         value: summary.todayOrders.toLocaleString(),         icon: ShoppingCart,color: "bg-green-500"  },
     { label: "Active Customers",value: summary.activeCustomers.toLocaleString(),   icon: Users,       color: "bg-purple-500" },
     { label: "Low Stock Items",value: summary.lowStockCount.toLocaleString(),       icon: Package,     color: "bg-orange-500" },
   ];

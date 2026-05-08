@@ -27,20 +27,20 @@ export function PrintablePriceTagSheet({ items, ref }: PrintablePriceTagSheetPro
 
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 print-tag-grid">
         {items.map((item) => (
-          <article key={`${item.product.id}-${item.copyNumber}`} className="rounded-lg border border-gray-300 bg-white px-2.5 py-2 shadow-sm print-tag-card">
-            <h2 className="line-clamp-2 text-center text-[11px] font-semibold leading-tight text-gray-900">
+          <article key={`${item.product.id}-${item.copyNumber}`} className="rounded border border-gray-300 bg-white px-1.5 py-1 shadow-sm print-tag-card">
+            <h2 className="line-clamp-1 text-center text-[10px] font-semibold leading-tight text-gray-900">
               {item.product.name}
             </h2>
 
-            <div className="mt-1.5 text-center">
-              <p className="text-2xl font-black tracking-tight text-blue-700">
+            <div className="mt-0.5 text-center">
+              <p className="text-lg font-black tracking-tight text-blue-700">
                 {formatCurrency(item.product.price, settings.currencySymbol)}
               </p>
             </div>
 
-            <div className="mt-2 border-t border-dashed border-gray-300 pt-2 text-center">
-              <BarcodeSvg value={item.product.barcode} className="mx-auto w-full max-w-[160px]" />
-              <p className="mt-1 font-mono text-[10px] tracking-[0.16em] text-gray-600">{item.product.barcode}</p>
+            <div className="mt-0.5 pt-0.5 text-center">
+              <BarcodeSvg value={item.product.barcode} className="mx-auto w-full max-w-[140px]" />
+              <p className="mt-0 font-mono text-[9px] tracking-tight text-gray-600">{item.product.barcode}</p>
             </div>
           </article>
         ))}

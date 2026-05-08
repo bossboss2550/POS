@@ -21,7 +21,7 @@ export function BarcodeSvg({ value, className }: BarcodeSvgProps) {
         displayValue: false,
         margin: 0,
         width: 1.6,
-        height: 42,
+        height: 22,
         background: "#ffffff",
       });
       // Defer state update

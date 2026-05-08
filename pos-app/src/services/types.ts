@@ -52,5 +52,5 @@ export interface IInventoryService {
 }
 
 export interface IReportService {
-  getDashboard(): Promise<DashboardSummary>;
+  getDashboard(range?: "today" | "week" | "month"): Promise<DashboardSummary>;
 }

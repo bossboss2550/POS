@@ -11,8 +11,8 @@ export class ReportsController {
   constructor(private reports: ReportsService) {}
 
   @Get('dashboard')
-  getDashboard() {
-    return this.reports.getDashboard();
+  getDashboard(@Query('range') range?: 'today' | 'week' | 'month') {
+    return this.reports.getDashboard(range ?? 'week');
   }
 
   @Get('sales')
