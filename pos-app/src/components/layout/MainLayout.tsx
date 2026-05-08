@@ -5,6 +5,7 @@ import { Header } from "./Header";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { MobileMoreDrawer } from "./MobileMoreDrawer";
 import { Notifications } from "@/components/shared/Notifications";
+import { IOSInstallPrompt } from "@/components/shared/IOSInstallPrompt";
 import { useMobileLayout } from "@/hooks/useMediaQuery";
 import { useUIStore } from "@/stores/uiStore";
 
@@ -71,6 +72,7 @@ export function MainLayout() {
       )}
 
       <Notifications />
+      <IOSInstallPrompt />
     </div>
   );
 }

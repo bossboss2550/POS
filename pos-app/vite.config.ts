@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "icon-192.png", "icon-512.png"],
+      includeAssets: ["favicon.svg", "icons.svg"],
       manifest: {
         name: "POS System",
         short_name: "POS",
@@ -18,19 +18,27 @@ export default defineConfig({
         theme_color: "#2563eb",
         background_color: "#f9fafb",
         display: "standalone",
+        display_override: ["standalone", "window-controls-overlay"],
         orientation: "portrait-primary",
-        start_url: "/pos",
+        start_url: "/",
         icons: [
-          { src: "icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: "icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" },
+          {
+            src: "favicon.svg",
+            sizes: "any",
+            type: "image/svg+xml",
+            purpose: "any maskable",
+          },
         ],
         shortcuts: [
-          { name: "New Sale", short_name: "Sell", description: "Open POS terminal", url: "/pos", icons: [{ src: "icon-192.png", sizes: "192x192" }] },
-          { name: "Inventory", short_name: "Stock", description: "Manage stock levels",  url: "/inventory", icons: [{ src: "icon-192.png", sizes: "192x192" }] },
+          { name: "New Sale", short_name: "Sell", description: "Open POS terminal", url: "/pos" },
+          { name: "Inventory", short_name: "Stock", description: "Manage stock levels",  url: "/inventory" },
         ],
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
